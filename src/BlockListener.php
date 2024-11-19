@@ -89,7 +89,18 @@ abstract class BlockListener extends Listener
                 $replace[] = $value;
             }
 
-            $pick->line->output = str_replace($search, $replace, $wrapper).PHP_EOL;
+            if (in_array('{alignment}', $search) && $replace[0] !== '') {
+                $container = explode($replace[0], $pick->line->output);
+            } else {
+                $container = [];
+            }
+
+            if (isset($container) && count($container) > 1) {
+                $pick->line->output = $container[0].str_replace($search, $replace, $wrapper).$container[1].PHP_EOL;
+            } else {
+                $pick->line->output = str_replace($search, $replace, $wrapper).PHP_EOL;
+            }
+
             $pick->line->setDone();
         }
     }
